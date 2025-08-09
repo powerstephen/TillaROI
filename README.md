@@ -1,25 +1,27 @@
-# Tilla ROI Calculator (Vite + React + Tailwind)
+# Tilla ROI Calculator — Branded (Vite + React + Tailwind)
 
 ## Local dev
-```
+```bash
 npm install
 npm run dev
 ```
 
 ## Production build
-```
+```bash
 npm run build
 npm run preview
 ```
 
-## Deploy to Vercel
-- Push this folder to a GitHub repo
-- In Vercel: New Project → import repo → Deploy
-- If you see build errors, ensure your project has:
-  - `@vitejs/plugin-react` in devDependencies
-  - `vite.config.js` using the plugin
-  - Node 18+ (declared in `package.json` → `engines`)
+## Deploy to Vercel (recommended)
+1) Push all files (including the **src/** and **public/** folders) to a GitHub repo.
+2) In Vercel: New Project → Import GitHub repo → Deploy.
+3) Vercel will detect Vite and serve the `dist/` output.
 
-## Notes
-- Tailwind is preconfigured
-- Output directory is `dist/`
+## Branding
+- Colors are defined in `tailwind.config.js` under `theme.extend.colors.tilla`.
+- Placeholder logo lives at `public/tilla-logo.svg`. Replace with your real logo using the same filename/path.
+- Favicon is `public/favicon.svg`.
+
+## Shareable links
+- The app reads URL query params: `industry`, `vessels`, `hourlyCost`, `turnover`, `softwareReplaced`, `tillaCost`.
+- Click **Share link** to copy a prefilled URL to clipboard.
