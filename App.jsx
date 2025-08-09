@@ -1,0 +1,1 @@
+export default function App(){return <div style={{padding:20}}>ROI Calculator will render here. Replace with full component from canvas.</div>}
