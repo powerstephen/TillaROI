@@ -168,4 +168,111 @@ function Scenarios({ inputs, setInputs, onBack, onContinue }) {
       <p className="text-xs text-blue-200/70 mt-2">Tune assumptions here — you’ll see the totals on the next screen.</p>
 
       <div className="flex justify-between mt-4">
-        <button className="px-4 py-2 rounded-xl border border-white/15 bg-[#0b1228]" onCli
+        <button className="px-4 py-2 rounded-xl border border-white/15 bg-[#0b1228]" onClick={onBack}>
+          Back
+        </button>
+        <button className="px-4 py-2 rounded-xl border border-white/15 bg-[#0b1228]" onClick={onContinue}>
+          Continue
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function Results({ inputs, outputs, onBack, onRestart }) {
+  const download = () => {
+    const rows = [
+      ["Metric", "Value"],
+      ["Number of agents", inputs.agents],
+      ["Cost per agent / year", inputs.agentCostYear],
+      ["Tickets per month", inputs.ticketsPerMonth],
+      ["Baseline AHT (min)", inputs.aht],
+      ["AHT reduction %", inputs.ahtReductionPct],
+      ["QA hours baseline / agent / month", inputs.qaHoursBaseline],
+      ["QA automation %", inputs.qaAutomationPct],
+      ["Manager hours saved / agent / month", inputs.managerHoursSaved],
+      ["Revenue protected (annual)", inputs.revenueProtected],
+      ["AHT labor savings (annual)", Math.round(outputs.ahtSavings)],
+      ["QA automation savings (annual)", Math.round(outputs.qaSavings)],
+      ["Manager time savings (annual)", Math.round(outputs.mgrSavings)],
+      ["Total annual impact", Math.round(outputs.total)],
+    ];
+    const csv = rows.map((r) => r.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "kaizo-roi-snapshot.csv";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+      a.remove();
+    }, 500);
+  };
+
+  return (
+    <section className="bg-[#111936] border border-white/10 rounded-2xl p-4 shadow-md">
+      <h2 className="text-base font-semibold mb-4">Annual Impact (Estimated)</h2>
+      <div className="space-y-2">
+        <KPI label="Labor savings from faster handling (AHT)" value={fmtMoney(outputs.ahtSavings, inputs.currency)} />
+        <KPI label="Labor savings from QA automation" value={fmtMoney(outputs.qaSavings, inputs.currency)} />
+        <KPI label="Manager time savings" value={fmtMoney(outputs.mgrSavings, inputs.currency)} />
+        <KPI label="Revenue protected (optional)" value={fmtMoney(inputs.revenueProtected, inputs.currency)} />
+        <KPI label="Total Annual Impact" value={fmtMoney(outputs.total, inputs.currency)} big />
+        <p className="text-xs text-blue-200/70">All figures are directional estimates for planning. Adjust inputs to fit your environment.</p>
+      </div>
+
+      <div className="flex justify-between mt-4">
+        <div className="flex gap-2">
+          <button className="px-4 py-2 rounded-xl border border-white/15 bg-[#0b1228]" onClick={onBack}>
+            Back
+          </button>
+          <button className="px-4 py-2 rounded-xl border border-white/15 bg-[#0b1228]" onClick={onRestart}>
+            Start Over
+          </button>
+        </div>
+        <button className="px-4 py-2 rounded-xl border border-white/15 bg-[#0b1228]" onClick={download}>
+          Download CSV
+        </button>
+      </div>
+    </section>
+  );
+}
+
+/* ---------- main App ---------- */
+export default function App() {
+  const [step, setStep] = useState(1);              // 1=Inputs, 2=Scenarios, 3=Results
+  const [inputs, setInputs] = useState(defaultInputs);
+  const outputs = useMemo(() => computeOutputs(inputs), [inputs]);
+
+  const go = (n) => () => setStep(n);
+
+  return (
+    <div className="min-h-screen text-slate-100 bg-gradient-to-b from-[#0b1020] via-[#0b1020] to-[#0e1530]">
+      <header className="max-w-4xl mx-auto px-5 pt-6 pb-2">
+        <div className="flex items-center gap-3">
+          <span className="inline-block w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_16px_rgba(16,185,129,0.7)]" />
+          <h1 className="text-xl font-semibold tracking-tight">
+            Kaizo ROI Calculator — Step {step} of 3
+          </h1>
+        </div>
+        <Stepper step={step} />
+      </header>
+
+      <main className="max-w-4xl mx-auto px-5 pb-8">
+        {step === 1 && <Inputs inputs={inputs} setInputs={setInputs} onContinue={go(2)} />}
+        {step === 2 && (
+          <Scenarios inputs={inputs} setInputs={setInputs} onBack={go(1)} onContinue={go(3)} />
+        )}
+        {step === 3 && (
+          <Results inputs={inputs} outputs={outputs} onBack={go(2)} onRestart={go(1)} />
+        )}
+      </main>
+
+      <footer className="max-w-4xl mx-auto px-5 pb-8 text-xs text-blue-200/70">
+        Demo for Kaizo interview. Client-side only. Build: {new Date().toISOString()}
+      </footer>
+    </div>
+  );
+}
