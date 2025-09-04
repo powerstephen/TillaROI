@@ -30,13 +30,7 @@ export function computeOutputs(i) {
 
   const total = ahtSavings + qaSavings + mgrSavings + i.revenueProtected;
 
-  return {
-    hourlyCost,
-    ahtSavings,
-    qaSavings,
-    mgrSavings,
-    total
-  };
+  return { hourlyCost, ahtSavings, qaSavings, mgrSavings, total };
 }
 
 export const fmtMoney = (v, cur = "$") =>
