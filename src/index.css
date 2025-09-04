@@ -2,14 +2,5 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --ring: theme(colors.tilla.accent);
-}
-body { @apply bg-gradient-to-b from-white to-slate-50 text-slate-800; }
-.card { @apply rounded-2xl border shadow-soft bg-white; }
-.btn { @apply inline-flex items-center justify-center rounded-xl border px-3 py-2 text-sm shadow-sm hover:shadow transition; }
-.btn-primary { @apply bg-tilla-primary text-white border-tilla-primary hover:bg-[#0a3555]; }
-.badge { @apply inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-medium bg-slate-100 text-slate-600; }
-input, select { @apply rounded-xl border px-3 py-2 w-full; }
-label { @apply text-sm font-medium; }
-h1, h2, h3 { @apply text-slate-900; }
+/* Optional tiny polish */
+html, body, #root { height: 100%; }
