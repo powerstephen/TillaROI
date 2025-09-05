@@ -1,3 +1,6 @@
+import kaizoLogo from "./assets/kaizo-logo.svg";
+import resultsHero from "./assets/results-hero.png";
+
 import { useMemo, useState } from "react";
 
 /* ---------- math / formatting ---------- */
